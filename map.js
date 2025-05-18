@@ -12,6 +12,10 @@ const map = new mapboxgl.Map({
     maxZoom: 18,
 });
 
+const stationFlow = d3.scaleQuantize()
+    .domain([0, 1])
+    .range([0, 0.5, 1]);
+
 function getCoords(station) {
     const point = new mapboxgl.LngLat(+station.lon, +station.lat);
     const { x, y } = map.project(point);
@@ -128,7 +132,11 @@ map.on('load', async() => {
             .attr('stroke', 'white')
             .attr('stroke-width', 1)
             .attr('opacity', 0.6)
-            .attr('pointer-events', 'auto');
+            .attr('pointer-events', 'auto')
+            .style('--departure-ratio', (d) => {
+                const ratio = d.totalTraffic === 0 ? 0.5 : d.departures / d.totalTraffic;
+                return stationFlow(ratio);
+            });
 
         updatedCircles.each(function(d) {
             d3.select(this).select('title').remove();
