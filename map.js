@@ -49,7 +49,7 @@ function computeStationTraffic(stations, trips) {
     const arrivals = d3.rollup(trips, v => v.length, d => d.end_station_id);
 
     return stations.map((station) => {
-        const id = station.Number;
+        const id = station.short_name;
         station.departures = departures.has(id) ? departures.get(id) : 0;
         station.arrivals = arrivals.has(id) ? arrivals.get(id) : 0;
         station.totalTraffic = station.departures + station.arrivals;
